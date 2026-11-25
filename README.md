@@ -2,10 +2,11 @@
 
 Aplicación Android que **lee el texto de documentos físicos** (como Google Lens) y te deja **copiarlo**.
 
-- 📷 Escanea con la cámara o elige una foto de la galería.
-- 🔤 Detecta el texto sin necesidad de internet (Google ML Kit).
-- 📋 Toca el texto para seleccionarlo y copiarlo, o cópialo todo.
-- 🏷️ Reconoce automáticamente correos, teléfonos, fechas, CURP/RFC y montos.
+- ⚡ Reconoce texto **en vivo** mientras apuntas la cámara (sin tomar foto), como Google Lens.
+- 👆 Toca un texto en pantalla y se copia al instante; "Seleccionar texto" congela la imagen para elegir varias líneas.
+- ▮▮ Lee códigos de barras y QR (p. ej. la clave de acceso de facturas y guías del SRI).
+- 🏷️ Detecta RUC, clave de acceso (49 dígitos), No. de comprobante, fechas, correos, teléfonos y montos.
+- 🔤 Funciona sin internet (Google ML Kit). También acepta fotos de la galería.
 
 ## Descargar
 👉 **https://djtechcool-create.github.io/ojo/** (página de descarga)

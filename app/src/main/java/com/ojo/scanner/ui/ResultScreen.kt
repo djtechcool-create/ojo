@@ -1,11 +1,5 @@
 package com.ojo.scanner.ui
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
-import android.os.Build
-import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -20,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -54,6 +49,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ojo.scanner.ScanState
 
@@ -93,7 +89,7 @@ fun ResultScreen(state: ScanState.Done, onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                "Toca el texto en la imagen para seleccionarlo.",
+                "Toca el texto en la imagen para seleccionarlo. Los códigos de barras se marcan en verde.",
                 style = MaterialTheme.typography.bodyMedium,
             )
 
@@ -131,6 +127,7 @@ fun ResultScreen(state: ScanState.Done, onBack: () -> Unit) {
                         val topLeft = Offset(ox + r.left * scale, oy + r.top * scale)
                         val boxSize = Size(r.width() * scale, r.height() * scale)
                         val isSelected = i in selected
+                        val baseColor = if (line.isBarcode) Color(0xFF00C853) else Color(0xFF42A5F5)
                         drawRoundRect(
                             color = if (isSelected) primary.copy(alpha = 0.35f) else Color.White.copy(alpha = 0.15f),
                             topLeft = topLeft,
@@ -138,7 +135,7 @@ fun ResultScreen(state: ScanState.Done, onBack: () -> Unit) {
                             cornerRadius = CornerRadius(4f),
                         )
                         drawRoundRect(
-                            color = if (isSelected) primary else Color(0xFF42A5F5),
+                            color = if (isSelected) primary else baseColor,
                             topLeft = topLeft,
                             size = boxSize,
                             cornerRadius = CornerRadius(4f),
@@ -173,7 +170,14 @@ fun ResultScreen(state: ScanState.Done, onBack: () -> Unit) {
                     state.data.forEach { item ->
                         AssistChip(
                             onClick = { copyToClipboard(context, item.value) },
-                            label = { Text("${item.type.label}: ${item.value}") },
+                            label = {
+                                Text(
+                                    "${item.type.label}: ${item.value}",
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.widthIn(max = 300.dp),
+                                )
+                            },
                         )
                     }
                 }
@@ -207,21 +211,4 @@ private fun fitTransform(viewW: Float, viewH: Float, imgW: Int, imgH: Int): Trip
     val ox = (viewW - imgW * scale) / 2f
     val oy = (viewH - imgH * scale) / 2f
     return Triple(scale, ox, oy)
-}
-
-private fun copyToClipboard(context: Context, text: String) {
-    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    clipboard.setPrimaryClip(ClipData.newPlainText("Ojo", text))
-    // Android 13+ ya muestra su propio aviso al copiar
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-        Toast.makeText(context, "Copiado", Toast.LENGTH_SHORT).show()
-    }
-}
-
-private fun shareText(context: Context, text: String) {
-    val intent = Intent(Intent.ACTION_SEND).apply {
-        type = "text/plain"
-        putExtra(Intent.EXTRA_TEXT, text)
-    }
-    context.startActivity(Intent.createChooser(intent, "Compartir texto"))
 }

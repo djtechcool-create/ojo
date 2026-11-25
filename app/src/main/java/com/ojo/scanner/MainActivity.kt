@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun OjoApp(vm: ScanViewModel = viewModel()) {
     when (val state = vm.state) {
-        ScanState.Camera -> CameraScreen(onImage = vm::analyze)
+        ScanState.Camera -> CameraScreen(onImage = vm::analyze, onFreeze = vm::showFrozen)
 
         is ScanState.Processing -> CenteredMessage {
             CircularProgressIndicator()

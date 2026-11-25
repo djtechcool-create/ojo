@@ -64,4 +64,46 @@ class DataExtractorTest {
         val tipos = DataExtractor.extract("a@b.com 15/03/2024 55 1234 5678").map { it.type }
         assertEquals(listOf(DataType.EMAIL, DataType.FECHA, DataType.TELEFONO), tipos)
     }
+
+    // Texto tal como sale de la guía de remisión de Ecuador
+    private val guia = """
+        RUC: 1793191092001
+        GUIA DE REMISÓN
+        No. 001-999-000002337
+        Número de Autorización
+        2411202606179319109200120019990000023370000232914
+        Fecha y Hora de Autorización:
+        2026-11-24T07:50:43-05:00
+        Fecha Fin Transporte: 24/11/2026
+        EXTRUIDO BOLITA CEREAL SABOR POLLO A LA BRASA 25GR SICAE2024-DEL46-26
+    """.trimIndent()
+
+    @Test
+    fun leeGuiaDeRemisionDeEcuador() {
+        val datos = DataExtractor.extract(guia)
+        assertEquals(
+            listOf(
+                DetectedData(DataType.RUC, "1793191092001"),
+                DetectedData(DataType.COMPROBANTE, "001-999-000002337"),
+                DetectedData(DataType.CLAVE_ACCESO, "2411202606179319109200120019990000023370000232914"),
+                DetectedData(DataType.FECHA, "2026-11-24T07:50:43-05:00"),
+                DetectedData(DataType.FECHA, "24/11/2026"),
+            ),
+            datos,
+        )
+    }
+
+    @Test
+    fun codigoDeBarrasVaPrimeroYNoSeRepite() {
+        val clave = "2411202606179319109200120019990000023370000232914"
+        val datos = DataExtractor.extract(guia, barcodes = listOf(clave))
+        assertEquals(DetectedData(DataType.CLAVE_ACCESO, clave), datos.first())
+        assertEquals(1, datos.count { it.value == clave })
+    }
+
+    @Test
+    fun codigoDeBarrasGenerico() {
+        val datos = DataExtractor.extract("", barcodes = listOf("7501234567890"))
+        assertEquals(listOf(DetectedData(DataType.CODIGO_BARRAS, "7501234567890")), datos)
+    }
 }

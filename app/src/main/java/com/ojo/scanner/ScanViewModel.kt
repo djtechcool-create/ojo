@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ojo.scanner.ocr.DataExtractor
 import com.ojo.scanner.ocr.DetectedData
 import com.ojo.scanner.ocr.OcrResult
 import com.ojo.scanner.ocr.TextAnalyzer
@@ -36,15 +35,20 @@ class ScanViewModel : ViewModel() {
         viewModelScope.launch {
             state = try {
                 val result = analyzer.recognize(image)
-                if (result.lines.isEmpty()) {
+                if (result.isEmpty) {
                     ScanState.Error("No se encontró texto. Intenta con más luz o acercándote al documento.")
                 } else {
-                    ScanState.Done(image, result, DataExtractor.extract(result.fullText))
+                    ScanState.Done(image, result, result.detectedData())
                 }
             } catch (e: Exception) {
                 ScanState.Error("No se pudo leer la imagen: ${e.localizedMessage}")
             }
         }
+    }
+
+    /** Congela lo que se está viendo en vivo para seleccionar con calma. */
+    fun showFrozen(image: Bitmap, result: OcrResult) {
+        state = ScanState.Done(image, result, result.detectedData())
     }
 
     fun reset() {
