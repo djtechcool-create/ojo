@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ojo – Escáner de texto</title>
+  <meta name="description" content="Ojo lee el texto de tus documentos en papel y te deja copiarlo. Descarga el APK para Android.">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --bg: #f5f7fb; --card: #ffffff; --text: #14181f; --muted: #5b6472;
+      --primary: #1565c0; --primary-text: #ffffff; --border: #e1e6ee;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e1117; --card: #171b23; --text: #e8ecf2; --muted: #9aa4b2;
+        --primary: #64a8f0; --primary-text: #0b1624; --border: #262c38;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.55;
+    }
+    main { max-width: 680px; margin: 0 auto; padding: 48px 16px 64px; }
+    header { text-align: center; }
+    header img { width: 96px; height: 96px; }
+    h1 { font-size: 2.4rem; margin: 12px 0 4px; }
+    .tagline { color: var(--muted); font-size: 1.1rem; margin: 0 0 28px; }
+    .download {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--primary); color: var(--primary-text); text-decoration: none;
+      font-weight: 600; font-size: 1.1rem; padding: 14px 28px; border-radius: 999px;
+    }
+    .download:hover { filter: brightness(1.08); }
+    .version { color: var(--muted); font-size: .9rem; margin-top: 10px; min-height: 1.4em; }
+    section {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 20px 24px; margin-top: 24px;
+    }
+    h2 { font-size: 1.2rem; margin: 0 0 12px; }
+    ul, ol { margin: 0; padding-left: 1.3em; }
+    li + li { margin-top: 6px; }
+    .note { color: var(--muted); font-size: .9rem; margin-top: 12px; }
+    footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top: 32px; }
+    footer a { color: var(--primary); }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="icon.svg" alt="">
+    <h1>Ojo</h1>
+    <p class="tagline">Apunta la cámara a un documento: reconoce el texto y los códigos de barras al instante para que los copies.</p>
+    <a class="download" id="download"
+       href="https://github.com/djtechcool-create/ojo/releases/latest/download/ojo.apk">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
+      </svg>
+      Descargar APK
+    </a>
+    <div class="version" id="version">Para Android 7.0 o superior</div>
+  </header>
+
+  <section>
+    <h2>¿Qué hace?</h2>
+    <ul>
+      <li>⚡ Reconocimiento <strong>en vivo</strong>: sin tomar foto, como Google Lens.</li>
+      <li>👆 Toca cualquier texto en la pantalla y se copia al instante.</li>
+      <li>▮▮ Lee <strong>códigos de barras</strong> y QR.</li>
+      <li>🏷️ Encuentra solo RUC, clave de acceso, No. de comprobante, fechas, correos, teléfonos y montos.</li>
+      <li>🔤 Funciona <strong>sin internet</strong>. También puedes elegir una foto de tu galería.</li>
+      <li>📤 Copia todo el texto o compártelo con WhatsApp, Notas, etc.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Cómo instalarla</h2>
+    <ol>
+      <li>Toca <strong>Descargar APK</strong> desde tu teléfono Android.</li>
+      <li>Abre el archivo <code>ojo.apk</code> descargado.</li>
+      <li>Si Android lo pide, permite <strong>"Instalar apps desconocidas"</strong> para tu navegador.</li>
+      <li>Toca <strong>Instalar</strong> y abre Ojo.</li>
+    </ol>
+    <p class="note">Al ser una app que no viene de Play Store, Android puede mostrar un aviso de seguridad. Es normal.</p>
+  </section>
+
+  <footer>
+    Código en <a href="https://github.com/djtechcool-create/ojo">GitHub</a>
+  </footer>
+</main>
+<script>
+  // Muestra la versión más reciente publicada (si GitHub responde).
+  fetch("https://api.github.com/repos/djtechcool-create/ojo/releases/latest")
+    .then(r => r.ok ? r.json() : null)
+    .then(rel => {
+      if (!rel) return;
+      const date = new Date(rel.published_at).toLocaleDateString("es", { dateStyle: "long" });
+      document.getElementById("version").textContent =
+        `Versión ${rel.tag_name} · ${date} · Android 7.0 o superior`;
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
