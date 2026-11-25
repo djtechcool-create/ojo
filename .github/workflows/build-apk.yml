@@ -59,20 +59,24 @@ jobs:
             --notes "APK compilado automáticamente desde ${{ github.sha }}." \
             --latest
 
+  # Copia la carpeta web/ a la rama gh-pages, que GitHub Pages publica.
   pages:
     needs: release
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: web
-      - id: deploy
-        uses: actions/deploy-pages@v4
+      - name: Publicar página en gh-pages
+        run: |
+          cp -r web /tmp/web
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan gh-pages-new
+          git rm -rq --cached .
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -r /tmp/web/. .
+          touch .nojekyll
+          git add -A
+          git commit -qm "Página de descarga desde ${{ github.sha }}"
+          git push -f origin HEAD:gh-pages

@@ -17,7 +17,7 @@ Cada vez que se integra un cambio a `main`, GitHub Actions:
 1. Corre las pruebas.
 2. Compila el APK.
 3. Crea un *Release* con `ojo.apk`.
-4. Actualiza la página de descarga (carpeta `web/`).
+4. Actualiza la página de descarga: copia la carpeta `web/` a la rama `gh-pages`.
 
 ## Estructura
 - `app/src/main/java/com/ojo/scanner/ocr/`: reconocimiento de texto (ML Kit) y detector de datos.
